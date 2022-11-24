@@ -4,6 +4,7 @@ const path = require('path');
 const fs = require('fs');
 const crypto = require('crypto');
 const _ = require('lodash');
+const fetch = require('node-fetch');
 
 const publicKey = fs.readFileSync(path.join(__dirname, 'resources/key.pub'));
 
@@ -64,6 +65,8 @@ module.exports = ({ dir, logger = noLog }) => {
     if (!isValid) return warnAndReturn();
 
     internals.licenseInfo = JSON.parse(content);
+    internals.features =
+      internals.licenseInfo.features || defaultFeatures[internals.licenseInfo.type];
 
     const expirationTime = new Date(internals.licenseInfo.expireAt).getTime();
     if (expirationTime < new Date().getTime()) {
@@ -72,6 +75,21 @@ module.exports = ({ dir, logger = noLog }) => {
   } catch (err) {
     return warnAndReturn();
   }
+
+  // fake refetch of features to test
+  setInterval(async () => {
+    const res = await fetch('http://localhost:5000/features');
+
+    try {
+      const { features } = await res.json();
+
+      console.log('Feature flag update', features);
+      // update features
+      internals.features = features;
+    } catch (error) {
+      console.log(error);
+    }
+  }, 10000);
 
   internals.isEE = true;
   return true;
@@ -97,18 +115,12 @@ Object.defineProperty(module.exports, 'isEE', {
 
 Object.defineProperty(module.exports, 'features', {
   get() {
-    const licenseInfo = module.exports.licenseInfo;
-
-    const { type: licenseType } = module.exports.licenseInfo;
-
-    const features = licenseInfo.features || defaultFeatures[licenseType];
-
     return {
       isEnabled(feature) {
-        return features.includes(feature);
+        return internals.features.includes(feature);
       },
       getEnabled() {
-        return features;
+        return internals.features;
       },
     };
   },
