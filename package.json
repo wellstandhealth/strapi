@@ -53,7 +53,8 @@
     "test:unit": "jest --verbose",
     "test:api": "node test/api.js",
     "test:generate-app": "node test/create-test-app.js",
-    "doc:api": "node scripts/open-api/serve.js"
+    "doc:api": "node scripts/open-api/serve.js",
+    "develop": "node scripts/develop.js"
   },
   "lint-staged": {
     "*.{js,md,css,scss,yaml,yml}": [
@@ -73,10 +74,11 @@
     "babel-eslint": "10.1.0",
     "chalk": "4.1.2",
     "chokidar": "3.5.3",
+    "commander": "9.4.1",
     "cross-env": "7.0.3",
     "dotenv": "14.2.0",
     "eslint": "8.27.0",
-    "execa": "1.0.0",
+    "execa": "5",
     "fs-extra": "10.1.0",
     "get-port": "5.1.1",
     "glob": "7.2.3",
