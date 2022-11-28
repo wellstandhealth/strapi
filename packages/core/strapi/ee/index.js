@@ -4,7 +4,6 @@ const path = require('path');
 const fs = require('fs');
 const crypto = require('crypto');
 const _ = require('lodash');
-const fetch = require('node-fetch');
 
 const publicKey = fs.readFileSync(path.join(__dirname, 'resources/key.pub'));
 
@@ -22,7 +21,7 @@ const defaultFeatures = {
   gold: ['sso'],
 };
 
-module.exports = ({ dir, logger = noLog }) => {
+const EEService = ({ dir, logger = noLog }) => {
   if (_.has(internals, 'isEE')) return internals.isEE;
 
   const warnAndReturn = (msg = 'Invalid license. Starting in CE.') => {
@@ -50,6 +49,8 @@ module.exports = ({ dir, logger = noLog }) => {
     return false;
   }
 
+  // TODO: optimistically return true if license key is valid
+
   try {
     const plainLicense = Buffer.from(license, 'base64').toString();
     const [signatureb64, contentb64] = plainLicense.split('\n');
@@ -65,7 +66,7 @@ module.exports = ({ dir, logger = noLog }) => {
     if (!isValid) return warnAndReturn();
 
     internals.licenseInfo = JSON.parse(content);
-    internals.features =
+    internals.licenseInfo.features =
       internals.licenseInfo.features || defaultFeatures[internals.licenseInfo.type];
 
     const expirationTime = new Date(internals.licenseInfo.expireAt).getTime();
@@ -76,26 +77,18 @@ module.exports = ({ dir, logger = noLog }) => {
     return warnAndReturn();
   }
 
-  // fake refetch of features to test
-  setInterval(async () => {
-    const res = await fetch('http://localhost:5000/features');
-
-    try {
-      const { features } = await res.json();
-
-      console.log('Feature flag update', features);
-      // update features
-      internals.features = features;
-    } catch (error) {
-      console.log(error);
-    }
-  }, 10000);
-
   internals.isEE = true;
   return true;
 };
 
-Object.defineProperty(module.exports, 'licenseInfo', {
+EEService.checkLicense = async () => {
+  // TODO: online / DB check of the license info
+  // TODO: refresh info if the DB info is outdated
+  // TODO: register cron
+  // internals.licenseInfo = await db.getLicense();
+};
+
+Object.defineProperty(EEService, 'licenseInfo', {
   get() {
     mustHaveKey('licenseInfo');
     return internals.licenseInfo;
@@ -104,7 +97,7 @@ Object.defineProperty(module.exports, 'licenseInfo', {
   enumerable: false,
 });
 
-Object.defineProperty(module.exports, 'isEE', {
+Object.defineProperty(EEService, 'isEE', {
   get() {
     mustHaveKey('isEE');
     return internals.isEE;
@@ -113,14 +106,14 @@ Object.defineProperty(module.exports, 'isEE', {
   enumerable: false,
 });
 
-Object.defineProperty(module.exports, 'features', {
+Object.defineProperty(EEService, 'features', {
   get() {
     return {
       isEnabled(feature) {
-        return internals.features.includes(feature);
+        return internals.licenseInfo.features.includes(feature);
       },
       getEnabled() {
-        return internals.features;
+        return internals.licenseInfo.features;
       },
     };
   },
@@ -135,3 +128,5 @@ const mustHaveKey = (key) => {
     throw err;
   }
 };
+
+module.exports = EEService;

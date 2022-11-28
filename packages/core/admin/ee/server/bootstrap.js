@@ -31,5 +31,7 @@ module.exports = async () => {
     await actionProvider.registerMany(SSO_ACTIONS);
   }
 
+  // TODO: check admin seats
+
   await executeCEBootstrap();
 };
