@@ -3,6 +3,11 @@
 const { Command } = require('commander');
 const inquirer = require('inquirer');
 const execa = require('execa');
+const crypto = require('crypto');
+const fse = require('fs-extra');
+const os = require('os');
+const { join } = require('path');
+const { generateNewApp } = require('@strapi/generate-new');
 
 const program = new Command();
 
@@ -56,6 +61,21 @@ const questions = [
       },
     ],
   },
+  {
+    type: 'list',
+    name: 'watchAdmin',
+    message: 'Will you be working on the admin UI?',
+    choices: [
+      {
+        name: 'Yes',
+        value: true,
+      },
+      {
+        name: 'No',
+        value: false,
+      },
+    ],
+  },
 ];
 
 program
@@ -64,13 +84,18 @@ program
   .action(runDevelop)
   .parse(process.argv);
 
-function getAppPath(answers) {
+async function createTemporaryApp(answers) {
+  const tmpAppPath = join(os.tmpdir(), `strapi-${crypto.randomBytes(6).toString('hex')}`);
+  await generateNewApp(tmpAppPath, {
+    quickstart: true,
+    ...(answers.template && { template: answers.template }),
+  });
+  return tmpAppPath;
+}
+
+async function getExistingAppPath(answers) {
   if (answers.useCase === 'new') {
-    // TODO: create a new app
-    throw new Error('Not implemented yet');
-    // Either use the create-strapi-app package via execa
-    // Or call @strapi/generate-new with some hardcoded options
-    // Maybe just let users pick a template?
+    return createTemporaryApp(answers);
   }
   if (answers.useCase === 'existing') {
     return answers.existingAppPath;
@@ -78,16 +103,38 @@ function getAppPath(answers) {
   return answers.useCase;
 }
 
+// Run the app
+async function runExistingApp(appPath, answers) {
+  const sigintHandler = () => {
+    console.log('SIGINT received, exiting Strapi...');
+  };
+
+  process.on('SIGINT', sigintHandler);
+
+  await execa('yarn', ['develop', ...(answers.watchAdmin ? ['--watch-admin'] : [])], {
+    cwd: appPath,
+    stdio: 'inherit',
+  }).on('exit', () => console.log('Strapi exited'));
+
+  process.removeListener('SIGINT', sigintHandler);
+}
+
 async function runDevelop() {
-  // Find info about the app to run
+  // Get required information about the app to run
   const answers = await inquirer.prompt(questions);
-  const appPath = getAppPath(answers);
+  const appPath = await getExistingAppPath(answers);
 
   // Run the app
-  // TODO: find why build not updating
-  execa('yarn', ['develop'], {
-    stdio: 'inherit',
-    cwd: appPath,
-  });
-  // TODO: handle process exit to delete the app if it was temporary
+  try {
+    await runExistingApp(appPath, answers);
+  } catch (error) {
+    // Silently exit if the user cancels the command;
+  }
+
+  // Delete the app if it was temporary
+  console.log('Cleaning up...', answers.useCase);
+  if (answers.useCase === 'new') {
+    console.info(`Deleting temporary app at ${appPath}`);
+    fse.rm(appPath, { recursive: true, force: true });
+  }
 }
