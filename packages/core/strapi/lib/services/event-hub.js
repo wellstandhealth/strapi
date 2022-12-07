@@ -1,16 +1,30 @@
-/**
- * The event hub is Strapi's event control center.
- */
-
 'use strict';
 
-const EventEmitter = require('events');
-
-class EventHub extends EventEmitter {}
-
 /**
- * Expose a factory function instead of the class
+ *
  */
-module.exports = function createEventHub(opts) {
-  return new EventHub(opts);
+module.exports = function createEventHub() {
+  const subscribers = [];
+
+  const addSubscriber = (cb) => {
+    subscribers.push(cb);
+
+    return () => {
+      subscribers.splice(subscribers.indexOf(cb), 1);
+    };
+  };
+
+  const emit = (...args) => {
+    for (const subscriber of subscribers) {
+      subscriber(...args);
+    }
+  };
+
+  const removeAllSubscribers = () => {};
+
+  return {
+    emit,
+    addSubscriber,
+    removeAllSubscribers,
+  };
 };
