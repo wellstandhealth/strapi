@@ -10,7 +10,7 @@ const ONE_MINUTE = 1000 * 60;
 const DEFAULT_FEATURES = {
   bronze: [],
   silver: [],
-  gold: ['sso'],
+  gold: ['sso', 'audit-logs'],
 };
 
 const ee = {
