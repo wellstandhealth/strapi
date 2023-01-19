@@ -17,6 +17,7 @@ const { createServer } = require('./services/server');
 const createWebhookRunner = require('./services/webhook-runner');
 const { webhookModel, createWebhookStore } = require('./services/webhook-store');
 const { createCoreStore, coreStoreModel } = require('./services/core-store');
+const { eeStoreModel } = require('../ee/ee-store');
 const createEntityService = require('./services/entity-service');
 const createCronService = require('./services/cron');
 const entityValidator = require('./services/entity-validator');
@@ -120,14 +121,15 @@ class Strapi {
     this.customFields = createCustomFields(this);
 
     createUpdateNotifier(this).notify();
+
+    Object.defineProperty(this, 'EE', {
+      get: () => ee.isEE,
+      configurable: false,
+    });
   }
 
   get config() {
     return this.container.get('config');
-  }
-
-  get EE() {
-    return ee({ dir: this.dirs.app.root, logger: this.log });
   }
 
   get services() {
@@ -369,6 +371,8 @@ class Strapi {
   }
 
   async register() {
+    ee.init(this.dirs.app.root, this.log);
+
     await Promise.all([
       this.loadApp(),
       this.loadSanitizers(),
@@ -404,6 +408,7 @@ class Strapi {
     const contentTypes = [
       coreStoreModel,
       webhookModel,
+      eeStoreModel,
       ...Object.values(strapi.contentTypes),
       ...Object.values(strapi.components),
     ];
@@ -446,6 +451,10 @@ class Strapi {
     });
 
     await this.db.schema.sync();
+
+    if (this.EE) {
+      await ee.checkLicense({ strapi: this });
+    }
 
     await this.hook('strapi::content-types.afterSync').call({
       oldContentTypes,
