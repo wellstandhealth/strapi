@@ -4,14 +4,9 @@ const { pick } = require('lodash/fp');
 
 const { readLicense, verifyLicense, fetchLicense, LicenseCheckError } = require('./license');
 const { eeStoreModel } = require('./ee-store');
-const { getRecurringCronExpression } = require('../lib/utils/cron');
+const { shiftCronExpression } = require('../lib/utils/cron');
 
 const ONE_MINUTE = 1000 * 60;
-const DEFAULT_FEATURES = {
-  bronze: [],
-  silver: [],
-  gold: ['sso', 'audit-logs'],
-};
 
 const ee = {
   enabled: false,
@@ -56,7 +51,6 @@ const onlineUpdate = async ({ strapi }) => {
   const transaction = await strapi.db.transaction();
 
   try {
-    // TODO: Use the core store interface instead, it does not support transactions and "FOR UPDATE" at the moment
     const eeInfo = await strapi.db
       .queryBuilder(eeStoreModel.uid)
       .where({ key: 'ee_information' })
@@ -127,12 +121,7 @@ const validateInfo = () => {
     return disable('License expired.');
   }
 
-  if (!ee.licenseInfo.features) {
-    ee.licenseInfo.features = DEFAULT_FEATURES[ee.licenseInfo.type];
-  }
-
   ee.enabled = true;
-  Object.freeze(ee.licenseInfo.features);
 };
 
 const checkLicense = async ({ strapi }) => {
@@ -143,7 +132,7 @@ const checkLicense = async ({ strapi }) => {
 
   if (!shouldStayOffline) {
     await onlineUpdate({ strapi });
-    strapi.cron.add({ [getRecurringCronExpression()]: onlineUpdate });
+    strapi.cron.add({ [shiftCronExpression('0 0 */12 * * *')]: onlineUpdate });
   } else {
     if (!ee.licenseInfo.expireAt) {
       return disable('Your license does not have offline support.');
