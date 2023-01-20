@@ -8,7 +8,7 @@ const fetch = require('node-fetch');
 const DEFAULT_FEATURES = {
   bronze: [],
   silver: [],
-  gold: ['sso'],
+  gold: ['sso', 'audit-logs'],
 };
 
 const publicKey = fs.readFileSync(join(__dirname, 'resources/key.pub'));
