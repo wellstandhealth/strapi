@@ -115,26 +115,24 @@ module.exports = [
   },
 
   // Audit logs
-  [
-    {
-      method: 'GET',
-      path: '/audit-logs',
-      handler: 'auditLogs.findMany',
-      config: {
-        middlewares: [enableFeatureMiddleware('audit-logs')],
-        // @TODO: Check to right permissions
-        policies: ['admin::isAuthenticatedAdmin'],
-      },
+  {
+    method: 'GET',
+    path: '/audit-logs',
+    handler: 'auditLogs.findMany',
+    config: {
+      middlewares: [enableFeatureMiddleware('audit-logs')],
+      // @TODO: Check to right permissions
+      policies: ['admin::isAuthenticatedAdmin'],
     },
-    {
-      method: 'GET',
-      path: '/audit-logs/:id',
-      handler: 'auditLogs.findOne',
-      config: {
-        middlewares: [enableFeatureMiddleware('audit-logs')],
-        // @TODO: Check to right permissions
-        policies: ['admin::isAuthenticatedAdmin'],
-      },
+  },
+  {
+    method: 'GET',
+    path: '/audit-logs/:id',
+    handler: 'auditLogs.findOne',
+    config: {
+      middlewares: [enableFeatureMiddleware('audit-logs')],
+      // @TODO: Check to right permissions
+      policies: ['admin::isAuthenticatedAdmin'],
     },
-  ],
+  },
 ];
