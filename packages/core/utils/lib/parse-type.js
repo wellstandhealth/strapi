@@ -55,7 +55,7 @@ const parseDateTimeOrTimestamp = (value) => {
  * Cast basic values based on attribute type
  * @param {Object} options - Options
  * @param {string} options.type - type of the atribute
- * @param {*} options.value - value tu cast
+ * @param {*} options.value - value to cast
  */
 const parseType = ({ type, value, forceCast = false }) => {
   switch (type) {
@@ -80,6 +80,9 @@ const parseType = ({ type, value, forceCast = false }) => {
     case 'float':
     case 'decimal': {
       return _.toNumber(value);
+    }
+    case 'biginteger': {
+      return BigInt(value);
     }
     case 'time': {
       return parseTime(value);

@@ -84,4 +84,76 @@ describe('parseType', () => {
       }
     );
   });
+
+  describe('Biginteger', () => {
+    it('Handles string inputs', () => {
+      expect(parseType({ type: 'biginteger', value: '-1' })).toBe(-1n);
+      expect(parseType({ type: 'biginteger', value: '987654321987654321987654321' })).toBe(
+        987654321987654321987654321n
+      );
+      expect(parseType({ type: 'biginteger', value: '-987654321987654321987654321' })).toBe(
+        -987654321987654321987654321n
+      );
+
+      // empty string is treated as 0 by the underlying BigInt
+      expect(parseType({ type: 'biginteger', value: '' })).toBe(0n);
+
+      // hex
+      expect(parseType({ type: 'biginteger', value: 0x1fffffffffffff })).toBe(9007199254740991n);
+
+      // octal
+      expect(parseType({ type: 'biginteger', value: 0o377777777777777777 })).toBe(
+        9007199254740991n
+      );
+
+      // binary
+      expect(
+        parseType({
+          type: 'biginteger',
+          value: 0b11111111111111111111111111111111111111111111111111111,
+        })
+      ).toBe(9007199254740991n);
+    });
+
+    it('Handles other data types', () => {
+      const enormousNumber = 100n ** 100n;
+
+      // String
+      expect(parseType({ type: 'biginteger', value: String(enormousNumber) })).toBe(enormousNumber);
+
+      // bigint
+      expect(parseType({ type: 'biginteger', value: enormousNumber })).toBe(enormousNumber);
+      expect(parseType({ type: 'biginteger', value: 987654321987654321987654321n })).toBe(
+        987654321987654321987654321n
+      );
+      expect(parseType({ type: 'biginteger', value: BigInt('987654321987654321987654321') })).toBe(
+        987654321987654321987654321n
+      );
+
+      // hex
+      expect(parseType({ type: 'biginteger', value: '0x1fffffffffffff' })).toBe(9007199254740991n);
+
+      // octal
+      expect(parseType({ type: 'biginteger', value: '0o377777777777777777' })).toBe(
+        9007199254740991n
+      );
+
+      // binary
+      expect(
+        parseType({
+          type: 'biginteger',
+          value: '0b11111111111111111111111111111111111111111111111111111',
+        })
+      ).toBe(9007199254740991n);
+    });
+
+    it('Throws on invalid input', () => {
+      expect(() => parseType({ type: 'biginteger', value: '25:12' })).toThrow();
+      expect(() => parseType({ type: 'biginteger', value: 'Hello' })).toThrow();
+      expect(() => parseType({ type: 'biginteger', value: '--2' })).toThrow();
+      expect(() => parseType({ type: 'biginteger', value: '2.5' })).toThrow();
+      expect(() => parseType({ type: 'biginteger', value: '2-' })).toThrow();
+      expect(() => parseType({ type: 'biginteger', value: '123n' })).toThrow();
+    });
+  });
 });
