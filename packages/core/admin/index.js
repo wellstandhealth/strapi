@@ -24,9 +24,8 @@ async function build({ appDir, buildDestDir, env, forceBuild, optimize, options,
   }
 
   // Create the cache dir containing the front-end files.
-  await createCacheDir({ appDir, plugins });
+  const cacheDir = await createCacheDir({ appDir, plugins });
 
-  const cacheDir = path.resolve(appDir, '.cache');
   const entry = path.resolve(cacheDir, 'admin', 'src');
   const dest = path.resolve(buildDestDir, 'build');
 

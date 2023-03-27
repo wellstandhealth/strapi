@@ -69,7 +69,7 @@ async function copyAdmin(dest) {
 }
 
 async function createCacheDir({ appDir, plugins }) {
-  const cacheDir = path.resolve(appDir, '.cache');
+  const cacheDir = path.resolve(appDir, 'node_modules', 'strapi', '.cache');
 
   const useTypeScript = await tsUtils.isUsingTypeScript(
     path.join(appDir, 'src', 'admin'),
@@ -126,6 +126,8 @@ async function createCacheDir({ appDir, plugins }) {
   if (!useTypeScript) {
     await tsUtils.admin.createTSConfigFile(cacheDir);
   }
+
+  return cacheDir;
 }
 
 module.exports = createCacheDir;

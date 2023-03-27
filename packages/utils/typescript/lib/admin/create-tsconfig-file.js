@@ -21,7 +21,7 @@ module.exports = async (dest) => {
       noEmit: false,
       incremental: true,
     },
-    include: ['../../../src/admin/*', '../../../src/**/**/admin/src/*'],
+    include: ['../../../../../src/admin/*', '../../../../../src/**/**/admin/src/*'],
     exclude: ['node_modules', '**/*.test.js', '*.js'],
   };
 
