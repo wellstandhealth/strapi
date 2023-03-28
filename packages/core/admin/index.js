@@ -12,6 +12,7 @@ const {
   getCustomWebpackConfig,
   shouldBuildAdmin,
   watchAdminFiles,
+  CACHE_DIR,
 } = require('./utils');
 
 async function build({ appDir, buildDestDir, env, forceBuild, optimize, options, plugins }) {
@@ -88,7 +89,7 @@ async function clean({ appDir, buildDestDir }) {
   // FIXME rename admin build dir and path to build dir
   const buildDir = path.join(buildDestDir, 'build');
   // .cache dir is always located at the root of the app
-  const cacheDir = path.join(appDir, '.cache');
+  const cacheDir = path.join(appDir, CACHE_DIR);
 
   fs.removeSync(buildDir);
   fs.removeSync(cacheDir);
@@ -97,7 +98,7 @@ async function clean({ appDir, buildDestDir }) {
 async function watchAdmin({ appDir, browser, buildDestDir, host, options, plugins, port }) {
   const useTypeScript = await isUsingTypeScript(path.join(appDir, 'src', 'admin'), 'tsconfig.json');
   // Create the cache dir containing the front-end files.
-  const cacheDir = path.join(appDir, '.cache');
+  const cacheDir = path.join(appDir, CACHE_DIR);
   await createCacheDir({ appDir, plugins });
 
   const entry = path.join(cacheDir, 'admin', 'src');

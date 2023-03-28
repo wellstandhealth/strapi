@@ -5,6 +5,7 @@ const _ = require('lodash');
 const fs = require('fs-extra');
 const tsUtils = require('@strapi/typescript-utils');
 const getCustomAppConfigFile = require('./get-custom-app-config-file');
+const { CACHE_DIR } = require('./constants');
 
 const getPkgPath = (name) => path.dirname(require.resolve(`${name}/package.json`));
 
@@ -69,7 +70,7 @@ async function copyAdmin(dest) {
 }
 
 async function createCacheDir({ appDir, plugins }) {
-  const cacheDir = path.resolve(appDir, 'node_modules', 'strapi', '.cache');
+  const cacheDir = path.resolve(appDir, CACHE_DIR);
 
   const useTypeScript = await tsUtils.isUsingTypeScript(
     path.join(appDir, 'src', 'admin'),
@@ -131,3 +132,5 @@ async function createCacheDir({ appDir, plugins }) {
 }
 
 module.exports = createCacheDir;
+
+module.CACHE_DIR = CACHE_DIR;
