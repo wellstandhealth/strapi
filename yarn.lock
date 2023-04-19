@@ -17297,7 +17297,7 @@ __metadata:
     pg: 8.8.0
     react: ^17.0.2
     react-intl: 6.3.2
-    sqlite3: 5.1.2
+    sqlite3: 5.1.5
   languageName: unknown
   linkType: soft
 
@@ -21006,7 +21006,7 @@ __metadata:
     mysql: 2.18.1
     passport-google-oauth2: 0.2.0
     pg: 8.8.0
-    sqlite3: 5.1.2
+    sqlite3: 5.1.5
   languageName: unknown
   linkType: soft
 
@@ -28599,9 +28599,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"sqlite3@npm:5.1.2":
-  version: 5.1.2
-  resolution: "sqlite3@npm:5.1.2"
+"sqlite3@npm:5.1.5":
+  version: 5.1.5
+  resolution: "sqlite3@npm:5.1.5"
   dependencies:
     "@mapbox/node-pre-gyp": ^1.0.0
     node-addon-api: ^4.2.0
@@ -28615,7 +28615,7 @@ __metadata:
   peerDependenciesMeta:
     node-gyp:
       optional: true
-  checksum: 5ed90068f27853c4fef9d01c2e18706b7f51351220cbcd34488772a8ee5438097a16955e7a9d462da81c93fdf1ed3c8cdb085b23ddda02fc863b48e6acc0ee6e
+  checksum: b7df68c8d4a16cd1d8d42e34035973c2e4cff33e0b917ff8830fa21c84e3bc0d16beaf51589a4a45df9c52e30bf0224122e6c67d0f17ff1d776be738d8706b02
   languageName: node
   linkType: hard
 
@@ -31143,14 +31143,14 @@ __metadata:
   linkType: hard
 
 "vm2@npm:^3.9.8":
-  version: 3.9.11
-  resolution: "vm2@npm:3.9.11"
+  version: 3.9.16
+  resolution: "vm2@npm:3.9.16"
   dependencies:
     acorn: ^8.7.0
     acorn-walk: ^8.2.0
   bin:
     vm2: bin/vm2
-  checksum: aab39e6e4b59146d24abacd79f490e854a6e058a8b23d93d2be5aca7720778e2605d2cc028ccc4a5f50d3d91b0c38be9a6247a80d2da1a6de09425cc437770b4
+  checksum: 646b45dca721acb3c8e4ae0742129f13612972387911c2475f3c06ac2b4232000cab0bdaaa65d97d6ea8dc70880e039542618b1b3d04adea79cd94803cbc4ab3
   languageName: node
   linkType: hard
 
