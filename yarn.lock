@@ -4223,13 +4223,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@sindresorhus/slugify@npm:1.1.0":
-  version: 1.1.0
-  resolution: "@sindresorhus/slugify@npm:1.1.0"
+"@sindresorhus/slugify@npm:1.1.2":
+  version: 1.1.2
+  resolution: "@sindresorhus/slugify@npm:1.1.2"
   dependencies:
     "@sindresorhus/transliterate": ^0.1.1
     escape-string-regexp: ^4.0.0
-  checksum: 6834c3a81e1ed479c82285d0b25b7f17fd2b8565ecc1d76c8e5a15820ddad32064be3a85a04b3f1c771e2b764405c21e82774b87b1141086cc2c34656adbffa0
+  checksum: 5177152d3edb223650e71dcbf234b18ddd1782af1c0cf0787034f059399c0ddf22514cd3fdea0db86d7e3c9a96edae3a605e67ce1616962f7ac46f51a7f4a267
   languageName: node
   linkType: hard
 
@@ -6415,7 +6415,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@strapi/generators@workspace:packages/generators/generators"
   dependencies:
-    "@sindresorhus/slugify": 1.1.0
+    "@sindresorhus/slugify": 1.1.2
     "@strapi/typescript-utils": 4.9.0
     "@strapi/utils": 4.9.0
     chalk: 4.1.2
@@ -6544,7 +6544,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@strapi/plugin-content-manager@workspace:packages/core/content-manager"
   dependencies:
-    "@sindresorhus/slugify": 1.1.0
+    "@sindresorhus/slugify": 1.1.2
     "@strapi/utils": 4.9.0
     lodash: 4.17.21
   languageName: unknown
@@ -6554,7 +6554,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@strapi/plugin-content-type-builder@workspace:packages/core/content-type-builder"
   dependencies:
-    "@sindresorhus/slugify": 1.1.0
+    "@sindresorhus/slugify": 1.1.2
     "@strapi/admin": 4.9.0
     "@strapi/design-system": 1.6.6
     "@strapi/generators": 4.9.0
@@ -7004,7 +7004,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@strapi/utils@workspace:packages/core/utils"
   dependencies:
-    "@sindresorhus/slugify": 1.1.0
+    "@sindresorhus/slugify": 1.1.2
     date-fns: 2.29.3
     http-errors: 1.8.1
     lodash: 4.17.21
