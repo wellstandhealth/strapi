@@ -29,7 +29,7 @@
     "lint": "run -T eslint ."
   },
   "dependencies": {
-    "@sindresorhus/slugify": "1.1.0",
+    "@sindresorhus/slugify": "1.1.2",
     "@strapi/design-system": "1.6.6",
     "@strapi/generators": "4.9.0",
     "@strapi/helper-plugin": "4.9.0",
